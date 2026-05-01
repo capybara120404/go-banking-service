@@ -1,0 +1,121 @@
+### Переменные окружения
+@baseUrl = http://localhost:8080
+# Замените токен ниже на актуальный, полученный после логина
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ2NjU3OC0xMTU1LTQ1YzEtOWM2Mi1jNjg0MGIwNGQ4NTIiLCJleHAiOjE3Nzc3NDIyMTIsImlhdCI6MTc3NzY1NTgxMn0.1wJ6F-ajBdmG1D_n-7o0UZhTX1N0v2cbF1lr_9dN3mw
+
+@firstAccountId = 2b01e6de-3d3d-4bcc-a7c4-3c6ad38c9e10
+@secondAccountId = b9e554a0-8ae4-4e64-bce2-ee61f7cc57fe
+
+### 1. Регистрация пользователя
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "securePassword123"
+}
+
+### 2. Аутентификация (Логин)
+# Скопируйте полученный токен в переменную @authToken выше
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "securePassword123"
+}
+
+### 3. Создание первого банковского счета
+POST {{baseUrl}}/accounts
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "currency": "RUB"
+}
+
+### 3b. Создание второго банковского счета
+POST {{baseUrl}}/accounts
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "currency": "RUB"
+}
+
+### 4. Получение списка счетов пользователя
+# Здесь вы увидите ID обоих созданных счетов
+GET {{baseUrl}}/accounts
+Authorization: {{authToken}}
+
+### 5. Пополнение первого счета
+# Замените {firstAccountId} на ID первого счета из шага 4
+POST {{baseUrl}}/accounts/{{firstAccountId}}/deposit
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "amount": 10000.00
+}
+
+### 6. Снятие средств со первого счета
+# Замените {firstAccountId} на ID первого счета
+POST {{baseUrl}}/accounts/{{firstAccountId}}/withdraw
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "amount": 500.00
+}
+
+### 7. Выпуск виртуальной карты
+# Замените {firstAccountId} на ID первого счета, к которому привязывается карта
+POST {{baseUrl}}/cards
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "account_id": "{{firstAccountId}}"
+}
+
+### 8. Получение списка карт пользователя
+GET {{baseUrl}}/cards
+Authorization: {{authToken}}
+
+### 9. Перевод средств между счетами
+# Замените {firstAccountId} на ID отправителя (например, первый счет)
+# Замените {secondAccountId} на ID получателя (например, второй счет)
+POST {{baseUrl}}/transfer
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "from_account_id": "{{firstAccountId}}",
+  "to_account_id": "{{secondAccountId}}",
+  "amount": 1000.00
+}
+
+### 10. Оформление кредита
+# Замените {firstAccountId} на ID счета для зачисления кредита
+POST {{baseUrl}}/credits
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "account_id": "{{firstAccountId}}",
+  "principal": 50000.00,
+  "term_months": 12
+}
+
+@creditId = fbe9ab6e-66ed-4368-ae1d-034a6de82d56
+
+### 11. Получение графика платежей по кредиту
+# Замените {creditId} на ID кредита, полученный в ответе шага 10
+GET {{baseUrl}}/credits/{{creditId}}/schedule
+Authorization: {{authToken}}
+
+### 12. Получение аналитики
+# days - опциональный параметр, по умолчанию 30
+GET {{baseUrl}}/analytics?days=30
+Authorization: {{authToken}}
