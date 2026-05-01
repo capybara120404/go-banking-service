@@ -203,6 +203,77 @@ EWtx8wqwKNnYWvYUqV40+S0oqDQbSSulnZiFrjpHxipXtuFgcjyQDDG9Pky4
    go run cmd/api/main.go
    ```
 
+## Структура проекта
+
+```text
+├── api_test.http        // файл с тестами для api
+├── cmd
+│   └── api
+│       └── main.go      // Точка входа в приложение с инициализацией всех зависимостей
+├── go.mod               // Файл управления зависимостями
+├── go.sum               // Файл управления зависимостями
+├── internal
+│   ├── config           // Загрузка настроек из ENV
+│   │   └── config.go
+│   ├── database         // Обертка над sql.DB, для управления соединением с бд
+│   │   └── storage.go
+│   ├── dto              // DTO для API (Request/Response)
+│   │   ├── account_response.go
+│   │   ├── analytics_response.go
+│   │   ├── auth_response.go
+│   │   ├── card_response.go
+│   │   ├── create_account_request.go
+│   │   ├── create_card_request.go
+│   │   ├── create_credit_request.go
+│   │   ├── credit_response.go
+│   │   ├── error_response.go
+│   │   ├── login_request.go
+│   │   ├── payment_schedule_response.go
+│   │   ├── predict_balance_response.go
+│   │   ├── register_request.go
+│   │   └── transfer_request.go
+│   ├── handler          // HTTP-обработчики
+│   │   ├── account_handler.go
+│   │   ├── analytics_handler.go
+│   │   ├── card_handler.go
+│   │   ├── credit_handler.go
+│   │   ├── transaction_handler.go
+│   │   └── user_handler.go
+│   ├── logger           // Глобальный логгер на базе logrus
+│   │   └── logger.go
+│   ├── middleware       // AuthMiddleware (проверка JWT) и LoggingMiddleware
+│   │   ├── auth_middleware.go
+│   │   └── logging_middleware.go
+│   ├── model            // Слой моделей с Go-структурами, для таблиц PostgreSQL
+│   │   ├── account.go
+│   │   ├── card.go
+│   │   ├── credit.go
+│   │   ├── payment_schedule.go
+│   │   ├── transaction.go
+│   │   └── user.go
+│   ├── repository       // Слой репозиториев для работы с бд
+│   │   ├── account_repository.go
+│   │   ├── card_repository.go
+│   │   ├── credit_repository.go
+│   │   ├── payment_schedule_repository.go
+│   │   ├── transaction_repository.go
+│   │   └── user_repository.go
+│   └── service          // Слой сервисов с бизнес-логикой
+│       ├── account_service.go
+│       ├── analytics_service.go
+│       ├── card_service.go
+│       ├── credit_service.go
+│       ├── email_service.go
+│       ├── key_rate_provider.go
+│       ├── transaction_service.go
+│       ├── user_service.go
+│       └── utils.go
+├── LICENSE
+├── migrations           // Миграции для бд созданные через утилиту goose
+│   └── 20260428145650_init_schema.sql
+└── README.md            // Описание самого проекта
+```
+
 ## Доступные эндпоинты
 
 ### Публичные
